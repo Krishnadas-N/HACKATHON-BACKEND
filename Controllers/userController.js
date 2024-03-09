@@ -40,16 +40,16 @@ const sendSMS = async (phoneNumber, message) => {
   const to = phoneNumber;
   const text = message;
 
-    await Vonages.sms
-      .send({ to, from, text })
-      .then((resp) => {
-        console.log("Message sent successfully");
-        console.log(resp);
-      })
-      .catch((err) => {
-        console.log("There was an error sending the messages.");
-        console.error(err);
-      });
+  await Vonages.sms
+    .send({ to, from, text })
+    .then((resp) => {
+      console.log("Message sent successfully");
+      console.log(resp);
+    })
+    .catch((err) => {
+      console.log("There was an error sending the messages.");
+      console.error(err);
+    });
 };
 
 const findNearestOfficials = async (referencePoint, maxDistance) => {
@@ -75,74 +75,57 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
 };
 
 
-module.exports = {
-  placeReport: async (req, res, next) => {
-    try {
-      const userId = req.user._id
-      const {
-        userName,
-        contactDetails,
-        location,
-        complaintText,
-        severity,
-        category,
-        comments
-      } = req.body;
-      if (
-        !userId ||
-        !userName ||
-        !location ||
-        !complaintText ||
-        !severity ||
-        !category
-      ) {
-        throw new Error("Missing fields");
-      }
-      const audioUrl = req.files.audio
-        ? await uploadToCloudinary(req.files.audio)
-        : null;
-      const videoUrl = req.files.video
-        ? await uploadToCloudinary(req.files.video)
-        : null;
-      const imageUrls = req.files.images
-        ? await Promise.all(
-            req.files.images.map((file) => uploadToCloudinary(file))
-          )
-        : [];
-      const newReport = new Report({
-        userId,
-        userName,
-        contactDetails,
-        location,
-        complaintText,
-        severity,
-        category,
-        audio: { url: audioUrl },
-        video: { url: videoUrl },
-        images: imageUrls,
-        comments
-      });
+const placeReport = async (req, res, next) => {
+  try {
+    const userId = req.user._id
+    const {
+      userName, contactDetails, location, complaintText,
+      severity, category, comments
+    } = req.body;
 
-      await newReport.save();
-
-      await sendConfirmationMessages(contactDetails, newReport);
-
-      await notifyNearestOfficials(location, newReport);
-
-      successHandler(
-        res,
-        201,
-        (message = "Report placed successfully"),
-        (data = { report: newReport })
-      );
-    } catch (error) {
-      console.error("Error placing report:", error);
-      next(error);
+    if (!userId || !userName || !location || !complaintText || !severity || !category) {
+      throw new Error("Missing fields");
     }
-  },
 
-  
+    const audioUrl = req.files.audio ? await uploadToCloudinary(req.files.audio) : null;
+    const videoUrl = req.files.video ? await uploadToCloudinary(req.files.video) : null;
+    const imageUrls = req.files.images ? await Promise.all(req.files.images.map((file) => uploadToCloudinary(file))) : [];
 
+    const newReport = new Report({
+      userId,
+      userName,
+      contactDetails,
+      location,
+      complaintText,
+      severity,
+      category,
+      audio: { url: audioUrl },
+      video: { url: videoUrl },
+      images: imageUrls,
+      comments
+    });
+
+    await newReport.save();
+
+    await sendConfirmationMessages(contactDetails, newReport);
+
+    await notifyNearestOfficials(location, newReport);
+
+    successHandler(
+      res,
+      201,
+      (message = "Report placed successfully"),
+      (data = { report: newReport })
+    );
+  } catch (error) {
+    console.error("Error placing report:", error);
+    next(error);
+  }
+}
+
+
+module.exports = {
+  placeReport
 };
 
 

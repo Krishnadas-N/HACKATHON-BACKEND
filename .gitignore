@@ -1,4 +1,4 @@
 .env
-node_modules
+node_modules/
 test.js
 private(2).key

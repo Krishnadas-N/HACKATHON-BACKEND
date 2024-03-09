@@ -1,7 +1,7 @@
 const express = require('express');
 const { authenticateToken } = require('../middlewares/userAuthentication');
 const { placeReport } = require('../Controllers/userController');
-
+const upload =  require('../Utils/multer')
 const  user_Router = express.Router();
 
 user_Router.post('/report-complaint',authenticateToken,upload.fields([
