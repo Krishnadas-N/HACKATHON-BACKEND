@@ -2,6 +2,8 @@ const Official = require("../Models/officalSchema")
 const User = require('../Models/userModel')
 const bcrypt = require('bcryptjs');
 const { successHandler, errorHandler } = require("../middlewares/responseHandler");
+const jwt = require('jsonwebtoken');
+const SupportContact = require("../Models/supportScehma");
 
 const signup = async (req, res) => {
     try {
@@ -10,9 +12,11 @@ const signup = async (req, res) => {
         if (userData) {
             errorHandler({ name: "Email already exists" }, 501, res)
         } else {
-            req.body.Password = await bcrypt.hash(req.body.Password, 10)
-            const officialData = await Official.insertMany(req.body)[0]
-            successHandler(res, 200, "official signed successfully", officialData)
+            const officialData = await Official.create(req.body);
+            
+            const token = jwt.sign({ officialData,role:'offical' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+
+            successHandler(res, 200, "official signed successfully", {officialData,token})
         }
     } catch (error) {
         console.error(error);
@@ -29,8 +33,7 @@ const login = async (req, res) => {
             if (bcrypt.compare(req.body.Password, userData.Password)) {
                 successHandler(res, 201, "official signed successfully", userData)
             } else {
-                const error = { name: "Password do not match" }
-                errorHandler(error, 501, res)
+                throw new Error('Password do not match')
             }
         } else {
             const error = { name: "User not found" }
@@ -41,6 +44,8 @@ const login = async (req, res) => {
         errorHandler(error, 501, res)
     }
 }
+
+
 
 
 module.exports = {

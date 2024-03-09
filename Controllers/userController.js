@@ -7,21 +7,26 @@ const {
 } = require("../middlewares/responseHandler");
 const { sendEmail } = require("../Utils/nodemailer");
 const Official = require("../Models/officalSchema");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { getSupportContactInfo } = require("../Utils/supportUtils");
 
 const sendConfirmationMessages = async (contactDetails, newReport) => {
   const { phone, email } = contactDetails;
-
+  const supportInfo = await getSupportContactInfo();
+  const acknowledgmentMessage = `Thank you for reporting. Your report ID is ${newReport._id}. For immediate assistance or further support, please contact:
+  Hotline: ${supportInfo.hotline}
+  Counseling Service: ${supportInfo.counselingService}
+  Local Support Organization: ${supportInfo.localSupportOrg}`;
   await sendSMS(
     phone,
-    `Thank you for reporting. Your report ID is ${newReport._id}`
+    acknowledgmentMessage
   );
 
   // Send email confirmation
   await sendEmail(
     email,
     "Report Confirmation",
-    `Thank you for reporting. Your report ID is ${newReport._id}`
+    acknowledgmentMessage
   );
 };
 
@@ -30,7 +35,7 @@ const notifyNearestOfficials = async (location, newReport) => {
 
   await Promise.all(
     nearestOfficials.map(async (official) => {
-      const message = `New report: ${newReport._id}. Location: ${location}. Category: ${newReport.category}. Click here to view details: https://your-website.com/reports/${newReport._id}`;
+      const message = `New report: ${newReport._id}. Location: ${location}. Category: ${newReport.category}. Click here to view details: localhost:3000/official/reports/${newReport._id}`;
       await sendEmail(official.contactInfo.email, message);
     })
   );
@@ -163,7 +168,7 @@ const postLogin = async (req, res, next) => {
       throw new Error("Invalid password");
     }
 
-    const token = jwt.sign({ user }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+    const token = jwt.sign({ user,role:'user' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
 
     successHandler(res, 200, 'Logged In Successfully', { token });
   } catch (err) {
