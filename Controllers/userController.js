@@ -7,6 +7,7 @@ const {
 } = require("../middlewares/responseHandler");
 const { sendEmail } = require("../Utils/nodemailer");
 const Official = require("../Models/officalSchema");
+const jwt = require('jsonwebtoken')
 
 const sendConfirmationMessages = async (contactDetails, newReport) => {
   const { phone, email } = contactDetails;
@@ -75,6 +76,95 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
 };
 
 
+
+const getAwarnessData= async(req,res,next)=>{
+  try {
+    const filePath = path.join(__dirname, 'WomenAwarness.json');
+    const jsonData = fs.readFileSync(filePath, 'utf8');
+
+    const awarenessData = JSON.parse(jsonData);
+    successHandler(
+      res,
+      201,
+       {awarenessData: awarenessData} 
+    )
+  } catch (err) {
+    console.error('Error reading awareness data:', err);
+    next(err);
+  }
+}
+
+
+const postLogin = async (req, res, next) => {
+  try {
+    const { Email, Password } = req.body;
+    
+    if (!Email || !Password) {
+      throw new Error("Please provide both Email and Password");
+    }
+    
+    const user = await User.findOne({ Email }).select('+Password').lean().exec();
+
+    if (!user) {
+      throw new Error(`No account found with email: ${Email}`);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(Password, user.Password);
+
+    if (!isPasswordMatch) {
+      throw new Error("Invalid password");
+    }
+
+    const token = jwt.sign({ user }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+
+    successHandler(res, 200, 'Logged In Successfully', { token });
+  } catch (err) {
+    console.error("ERROR IN LOGIN", err);
+    next(err);
+  }
+};
+
+
+const Signup = async (req, res, next) => {
+  try {
+    const { userName, Email, Password, Phone } = req.body;
+
+    if (!userName || !Email || !Password || !Phone) {
+      throw new Error("Please provide all required fields");
+    }
+    const existingUser = await User.findOne({ Email });
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+
+    const newUser = new User({
+      userName,
+      Email,
+      Password,
+      Phone
+    });
+
+    await newUser.save();
+    successHandler(res, 200, 'User signed up successfully', { token,newUser });
+  } catch (err) {
+    console.error("ERROR IN SIGNUP", err);
+    next(err);
+  }
+};
+
+
+const getComplaint= async(req,res,next)=>{
+  try{
+    
+  }catch (err) {
+    console.error("ERROR IN SIGNUP", err);
+    next(err);
+  }
+}
+
+
+
+
 module.exports = {
   placeReport: async (req, res, next) => {
     try {
@@ -129,19 +219,20 @@ module.exports = {
 
       await notifyNearestOfficials(location, newReport);
 
-      successHandler(
-        res,
+      successHandler( res,
         201,
-        (message = "Report placed successfully"),
-        (data = { report: newReport })
+        "Report placed successfully",
+        { report: newReport }
       );
     } catch (error) {
       console.error("Error placing report:", error);
       next(error);
     }
   },
+  postLogin,
+  getAwarnessData,
+  Signup
 
-  
 
 };
 

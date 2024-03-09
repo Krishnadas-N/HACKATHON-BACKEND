@@ -1,0 +1,289 @@
+{
+  "awareness_campaigns": [
+    {
+      "title": "Beti Bachao, Beti Padhao",
+      "description": "Join the movement to save and educate the girl child. Together, let's empower girls and eliminate gender-based violence.",
+      "image_url": "https://example.com/images/beti_bachao_beti_padhao.jpg",
+      "resources": [
+        {
+          "title": "Government of India - Beti Bachao, Beti Padhao",
+          "link": "https://www.betibachao.betipadhao.gov.in/"
+        },
+        {
+          "title": "UNICEF India - Gender Equality and Violence Prevention",
+          "link": "https://www.unicef.org/india/what-we-do/gender-equality-and-violence-prevention"
+        }
+      ]
+    },
+    {
+      "title": "One Stop Centre Scheme",
+      "description": "Access comprehensive support and services for women affected by violence through One Stop Centres across India.",
+      "image_url": "https://example.com/images/one_stop_centre_scheme.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - One Stop Centre Scheme",
+          "link": "https://www.wcd.nic.in/schemes/one-stop-centre-scheme"
+        },
+        {
+          "title": "National Commission for Women - Helpline Numbers",
+          "link": "https://ncw.nic.in/helpline-numbers"
+        }
+      ]
+    },
+    {
+      "title": "16 Days of Activism Against Gender-Based Violence",
+      "description": "Participate in the global campaign to raise awareness and take action against gender-based violence, including violence against women.",
+      "image_url": "https://example.com/images/16_days_activism.jpg",
+      "resources": [
+        {
+          "title": "UN Women - 16 Days of Activism",
+          "link": "https://www.unwomen.org/en/what-we-do/ending-violence-against-women/take-action/16-days-of-activism"
+        },
+        {
+          "title": "Say NO - UNiTE to End Violence against Women",
+          "link": "https://www.un.org/en/spotlight-initiative"
+        }
+      ]
+    },
+    {
+      "title": "Nirbhaya Fund",
+      "description": "Support initiatives aimed at enhancing the safety and security of women through the Nirbhaya Fund.",
+      "image_url": "https://example.com/images/nirbhaya_fund.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Nirbhaya Fund",
+          "link": "https://www.wcd.nic.in/schemes/nirbhaya-fund"
+        },
+        {
+          "title": "National Crime Records Bureau - Reports on Crime Against Women",
+          "link": "https://ncrb.gov.in/en/crime-in-india-table-additional-table-and-chapter-contents"
+        }
+      ]
+    },
+    {
+      "title": "Mahila Shakti Kendra Scheme",
+      "description": "Empower women and provide them with access to various support services through the Mahila Shakti Kendra Scheme.",
+      "image_url": "https://example.com/images/mahila_shakti_kendra.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Mahila Shakti Kendra Scheme",
+          "link": "https://www.wcd.nic.in/schemes/mahila-shakti-kendra-scheme"
+        },
+        {
+          "title": "National Commission for Women - Legal Awareness Programs",
+          "link": "https://ncw.nic.in/legal-awareness"
+        }
+      ]
+    },
+    {
+      "title": "National Policy for Women",
+      "description": "Advocate for policies and programs that promote gender equality and protect the rights of women through the National Policy for Women.",
+      "image_url": "https://example.com/images/national_policy_for_women.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - National Policy for Women",
+          "link": "https://www.wcd.nic.in/national-policy-women"
+        },
+        {
+          "title": "National Commission for Women - Policy and Law",
+          "link": "https://ncw.nic.in/policy-and-law"
+        }
+      ]
+    },
+    {
+      "title": "Dowry Prohibition Act",
+      "description": "Raise awareness about the Dowry Prohibition Act and work towards eradicating the practice of dowry, which often leads to violence against women.",
+      "image_url": "https://example.com/images/dowry_prohibition_act.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Dowry Prohibition Act",
+          "link": "https://www.wcd.nic.in/dowry-prohibition-act"
+        },
+        {
+          "title": "National Commission for Women - Dowry Cases",
+          "link": "https://ncw.nic.in/dowry-cases"
+        }
+      ]
+    },
+    {
+      "title": "Sakhi One Stop Centre",
+      "description": "Provide holistic support services to women affected by violence through the Sakhi One Stop Centre initiative.",
+      "image_url": "https://example.com/images/sakhi_one_stop_centre.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Sakhi One Stop Centre",
+          "link": "https://www.wcd.nic.in/sakhi-one-stop-centre"
+        },
+        {
+          "title": "National Commission for Women - Sakhi Centres",
+          "link": "https://ncw.nic.in/sakhi-centres"
+        }
+      ]
+    },
+    {
+      "title": "Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act",
+      "description": "Ensure safe and harassment-free workplaces for women by implementing the Sexual Harassment of Women at Workplace Act.",
+      "image_url": "https://example.com/images/sexual_harassment_at_workplace_act.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Sexual Harassment Act",
+          "link": "https://www.wcd.nic.in/sexual-harassment-women-workplace-prevention-prohibition-and-redressal-act"
+        },
+        {
+          "title": "National Commission for Women - Workplace Harassment",
+          "link": "https://ncw.nic.in/workplace-harassment"
+        }
+      ]
+    },
+    {
+      "title": "Crime Against Women Cell",
+      "description": "Report and address crimes against women effectively through specialized Crime Against Women Cells established across India.",
+      "image_url": "https://example.com/images/crime_against_women_cell.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Home Affairs - Crime Against Women Cell",
+          "link": "https://mha.gov.in/sites/default/files/CRIME%20AGAINST%20WOMEN%20CELLS_07022022.pdf"
+        },
+        {
+          "title": "National Commission for Women - Complaints",
+          "link": "https://ncw.nic.in/complaints"
+        }
+      ]
+    },
+    {
+      "title": "Women Helpline Scheme",
+      "description": "Provide immediate assistance and support to women in distress through the Women Helpline Scheme.",
+      "image_url": "https://example.com/images/women_helpline_scheme.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Women Helpline Scheme",
+          "link": "https://www.wcd.nic.in/schemes/women-helpline-scheme"
+        },
+        {
+          "title": "National Commission for Women - Helpline Numbers",
+          "link": "https://ncw.nic.in/helpline-numbers"
+        }
+      ]
+    },
+    {
+      "title": "Stree Shakti Puraskar",
+      "description": "Recognize and honor the contributions of women in various fields through the Stree Shakti Puraskar.",
+      "image_url": "https://example.com/images/stree_shakti_puraskar.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Stree Shakti Puraskar",
+          "link": "https://www.wcd.nic.in/schemes/stree-shakti-puraskar"
+        },
+        {
+          "title": "National Commission for Women - Awards",
+          "link": "https://ncw.nic.in/awards"
+        }
+      ]
+    },
+    {
+      "title": "Nari Shakti Puraskar",
+      "description": "Celebrate the achievements and contributions of women towards society with the Nari Shakti Puraskar.",
+      "image_url": "https://example.com/images/nari_shakti_puraskar.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Nari Shakti Puraskar",
+          "link": "https://www.wcd.nic.in/schemes/nari-shakti-puraskar"
+        },
+        {
+          "title": "National Commission for Women - Awards",
+          "link": "https://ncw.nic.in/awards"
+        }
+      ]
+    },
+    {
+      "title": "Pradhan Mantri Matru Vandana Yojana",
+      "description": "Support pregnant and lactating women by providing them with financial assistance through the Pradhan Mantri Matru Vandana Yojana.",
+      "image_url": "https://example.com/images/pradhan_mantri_matru_vandana_yojana.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - PMMVY",
+          "link": "https://www.wcd.nic.in/schemes/pradhan-mantri-matru-vandana-yojana-pmmvy"
+        },
+        {
+          "title": "National Health Mission - PMMVY Guidelines",
+          "link": "https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=826&lid=172"
+        }
+      ]
+    },
+    {
+      "title": "Swadhar Greh Scheme",
+      "description": "Provide shelter, support, and rehabilitation to women in difficult circumstances through the Swadhar Greh Scheme.",
+      "image_url": "https://example.com/images/swadhar_greh_scheme.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - Swadhar Greh Scheme",
+          "link": "https://www.wcd.nic.in/schemes/swadhar-greh-scheme"
+        },
+        {
+          "title": "National Commission for Women - Shelter Homes",
+          "link": "https://ncw.nic.in/shelter-homes"
+        }
+      ]
+    },
+    {
+      "title": "Legal Aid Services",
+      "description": "Ensure access to legal aid and support services for women through various legal aid schemes and programs.",
+      "image_url": "https://example.com/images/legal_aid_services.jpg",
+      "resources": [
+        {
+          "title": "National Legal Services Authority - Legal Aid Services",
+          "link": "https://nalsa.gov.in/legalaidschemes"
+        },
+        {
+          "title": "National Commission for Women - Legal Aid",
+          "link": "https://ncw.nic.in/legal-aid"
+        }
+      ]
+    },
+    {
+      "title": "Gender Champions Campaign",
+      "description": "Become a gender champion and advocate for gender equality and women's rights in your community and workplace.",
+      "image_url": "https://example.com/images/gender_champions_campaign.jpg",
+      "resources": [
+        {
+          "title": "UN Women - HeForShe Campaign",
+          "link": "https://www.unwomen.org/en/partnerships/heforshe"
+        },
+        {
+          "title": "Ministry of Women and Child Development - Gender Equality Programs",
+          "link": "https://www.wcd.nic.in/schemes/gender-equality-programmes"
+        }
+      ]
+    },
+    {
+      "title": "Women Entrepreneurship Platform",
+      "description": "Empower women entrepreneurs and promote women-led businesses through the Women Entrepreneurship Platform.",
+      "image_url": "https://example.com/images/women_entrepreneurship_platform.jpg",
+      "resources": [
+        {
+          "title": "Ministry of Women and Child Development - WEP",
+          "link": "https://www.wcd.nic.in/schemes/women-entrepreneurship-platform"
+        },
+        {
+          "title": "NITI Aayog - Women Entrepreneurship",
+          "link": "https://niti.gov.in/plans/sectoral/infrastructure_and_economic_services/entrepreneurship_development/women-entrepreneurship"
+        }
+      ]
+    },
+    {
+      "title": "National Commission for Women",
+      "description": "Seek assistance and support from the National Commission for Women for issues related to violence against women and women's rights violations.",
+      "image_url": "https://example.com/images/national_commission_for_women.jpg",
+      "resources": [
+        {
+          "title": "National Commission for Women - Official Website",
+          "link": "https://ncw.nic.in/"
+        },
+        {
+          "title": "NCW Complaints Portal",
+          "link": "https://ncw.nic.in/complaints"
+        }
+      ]
+    }
+  ]
+}
