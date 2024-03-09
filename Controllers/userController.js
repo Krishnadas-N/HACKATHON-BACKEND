@@ -7,6 +7,7 @@ const {
 } = require("../middlewares/responseHandler");
 const { sendEmail } = require("../Utils/nodemailer");
 const Official = require("../Models/officalSchema");
+const jwt = require('jsonwebtoken')
 
 const sendConfirmationMessages = async (contactDetails, newReport) => {
   const { phone, email } = contactDetails;
@@ -74,6 +75,7 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
   }
 };
 
+ 
 
 const placeReport = async (req, res, next) => {
   try {
@@ -90,7 +92,6 @@ const placeReport = async (req, res, next) => {
     const audioUrl = req.files.audio ? await uploadToCloudinary(req.files.audio) : null;
     const videoUrl = req.files.video ? await uploadToCloudinary(req.files.video) : null;
     const imageUrls = req.files.images ? await Promise.all(req.files.images.map((file) => uploadToCloudinary(file))) : [];
-
     const newReport = new Report({
       userId,
       userName,
@@ -124,9 +125,102 @@ const placeReport = async (req, res, next) => {
 }
 
 
-module.exports = {
-  placeReport
+const getAwarnessData= async(req,res,next)=>{
+  try {
+    const filePath = path.join(__dirname, 'WomenAwarness.json');
+    const jsonData = fs.readFileSync(filePath, 'utf8');
+
+    const awarenessData = JSON.parse(jsonData);
+    successHandler(
+      res,
+      201,
+       {awarenessData: awarenessData} 
+    )
+  } catch (err) {
+    console.error('Error reading awareness data:', err);
+    next(err);
+  }
+}
+
+
+const postLogin = async (req, res, next) => {
+  try {
+    const { Email, Password } = req.body;
+    
+    if (!Email || !Password) {
+      throw new Error("Please provide both Email and Password");
+    }
+    
+    const user = await User.findOne({ Email }).select('+Password').lean().exec();
+
+    if (!user) {
+      throw new Error(`No account found with email: ${Email}`);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(Password, user.Password);
+
+    if (!isPasswordMatch) {
+      throw new Error("Invalid password");
+    }
+
+    const token = jwt.sign({ user }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+
+    successHandler(res, 200, 'Logged In Successfully', { token });
+  } catch (err) {
+    console.error("ERROR IN LOGIN", err);
+    next(err);
+  }
 };
+
+
+const Signup = async (req, res, next) => {
+  try {
+    const { userName, Email, Password, Phone } = req.body;
+
+    if (!userName || !Email || !Password || !Phone) {
+      throw new Error("Please provide all required fields");
+    }
+    const existingUser = await User.findOne({ Email });
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+
+    const newUser = new User({
+      userName,
+      Email,
+      Password,
+      Phone
+    });
+
+    await newUser.save();
+    successHandler(res, 200, 'User signed up successfully', { token,newUser });
+  } catch (err) {
+    console.error("ERROR IN SIGNUP", err);
+    next(err);
+  }
+};
+
+
+const getComplaint= async(req,res,next)=>{
+  try{
+    
+  }catch (err) {
+    console.error("ERROR IN SIGNUP", err);
+    next(err);
+  }
+}
+
+
+
+
+module.exports = {
+  placeReport,
+  postLogin,
+  getAwarnessData,
+  Signup
+}
+
+ 
 
 
 
