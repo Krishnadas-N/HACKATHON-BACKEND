@@ -1,4 +1,4 @@
-function successHandler(req, res, statusCode, message, data) {
+function successHandler( res, statusCode=201, message, data) {
     res.status(statusCode).json({
       success: true,
       message: message,
@@ -8,9 +8,9 @@ function successHandler(req, res, statusCode, message, data) {
 
   
 
-  function errorHandler(err, req, res, next) {
+  function errorHandler(err,statusCode, res, next) {
     console.error(err.stack);
-    res.status(500).json({
+    res.status(statusCode || 500).json({
       success: false,
       message: err.name || 'Internal Server Error',
       error: err.message

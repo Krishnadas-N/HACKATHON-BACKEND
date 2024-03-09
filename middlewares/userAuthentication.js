@@ -11,12 +11,15 @@ function authenticateToken(req, res, next) {
     console.log(err)
 
     if (err) {
+        let statusCode = 500;
         if (err.name === 'TokenExpiredError') {
-            errorHandler(err,req,res,next);
+            statusCode = 401; 
+            errorHandler(err,statusCode,res,next);
         } else if (err.name === 'JsonWebTokenError') {
-            errorHandler(err,req,res,next);
+             statusCode = 401; 
+            errorHandler(err,statusCode,res,next);
         } else {
-            errorHandler(err,req,res,next);
+            errorHandler(err,statusCode,res,next);
         }
       }
 
