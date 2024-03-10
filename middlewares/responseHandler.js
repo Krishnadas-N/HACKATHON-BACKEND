@@ -9,6 +9,8 @@ function successHandler(res, statusCode = 201, message, data) {
 
 
 function errorHandler(err, statusCode, res, next) {
+
+  console.log(err);
   res.status(statusCode || 500).json({
     success: false,
     message: err.name || 'Internal Server Error',
