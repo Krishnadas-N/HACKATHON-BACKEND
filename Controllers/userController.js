@@ -12,7 +12,6 @@ const { getSupportContactInfo } = require("../Utils/supportUtils");
 const Report = require("../Models/reportSchema");
 const SupportContact = require("../Models/supportScehma");
 const { default: mongoose } = require("mongoose");
-const bcrypt = require('bcryptjs')
 
 
 
@@ -128,7 +127,7 @@ const placeReport = async (req, res, next) => {
     const userId = req.user._id
     const {
       userName, contactDetails, location, complaintText,
-      severity, category, comments
+      severity, category, 
     } = req.body;
 
     // if (!userId || !userName || !location || !complaintText || !severity || !category) {
@@ -149,7 +148,6 @@ const placeReport = async (req, res, next) => {
       audio: { url: audioUrl },
       video: { url: videoUrl },
       images: imageUrls,
-      comments
     });
 
     await newReport.save();
@@ -263,6 +261,7 @@ const getComplaint = async (req, res, next) => {
 
 const respondOfficalRequest = async (req, res, next) => {
   try {
+    console.log("responese to offica requestt      ///");
     const reportId = req.params.reportId;
     const response = req.params.response;
 

@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const { signup, login, userContactRequest,userReport, getCompliants } = require('../Controllers/officialController');
 const { Officialauthenticate, authenticateToken } = require('../middlewares/userAuthentication');
 const
     {
@@ -13,7 +14,7 @@ const
 
 
 
-router.post('/signup', signup);
+router.post('/register', signup);
 
 router.post('/login', login);
 
@@ -26,4 +27,4 @@ router.get('/home', authenticateToken, Officialauthenticate, getCompliants)
 
 
 
-module.exports = router
+module.exports = router;
