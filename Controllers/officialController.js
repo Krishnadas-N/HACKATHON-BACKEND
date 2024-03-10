@@ -14,24 +14,38 @@ require('dotenv').config()
 
 
 
-const signup = async (req, res,next) => {
+const signup = async (req, res, next) => {
     try {
         console.log(req.body);
-        const userData = await User.findOne({ Email: req.body.Email })
-        if (userData) {
-            errorHandler({ name: "Email already exists" }, 501, res)
-        } else {
-            const officialData = await Official.create(req.body);
-            
-            const token = jwt.sign({ officialData,role:'offical' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+        const { name, email, phone, role, location= { type: 'Point', coordinates: [0, 0] }, governmentId, isGovernmentRecognized, status='Available' } = req.body;
 
-            successHandler(res, 200, "official signed successfully", {officialData,token})
+        const userData = await Official.findOne({ email });
+        if (userData) {
+            return res.status(400).json({ error: 'Email already exists' });
         }
+
+        const newOfficial = new Official({
+            name,
+            email,
+            phone,
+            role,
+            location,
+            governmentId,
+            isGovernmentRecognized,
+            status
+        });
+
+        const savedOfficial = await newOfficial.save();
+
+        const token = jwt.sign({ officialData: savedOfficial, role: 'official' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+
+        // Respond with success message and token
+        res.status(200).json({ message: 'Official signed up successfully', officialData: savedOfficial, token });
     } catch (error) {
         console.error(error);
-        errorHandler(error, 501, res)
+        res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 
 const login = async (req, res,next) => {
@@ -121,8 +135,10 @@ const userContactRequest = async(req,res,next)=>{
 
 const getCompliants = async(req,res,next)=>{
     try{
-        const reports = await Report.find({}, 'userName complaintText severity category status createdAt updatedAt');
-        
+        const reports = await Report.find({}, 'userName complaintText severity category status createdAt updatedAt')
+        .populate('userId', 'username')
+        .populate('assignedOfficial', 'name email phone')
+        successHandler(res, 201, "request success", {reports})
     }catch(error){
     console.error('get compaint home:', error);
        next(error)
@@ -131,5 +147,5 @@ const getCompliants = async(req,res,next)=>{
 
 
 module.exports = {
-    signup, login ,userContactRequest,userReport
+    signup, login ,userContactRequest,userReport,getCompliants
 }

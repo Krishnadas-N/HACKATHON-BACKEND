@@ -16,10 +16,11 @@ app.use(cors({
     origin: "http://localhost:4100",
     credentials:true
 }));
-app.use(require('morgan')('dev'))
+app.use(require('morgan')('combined'))
+
+app.use('/officials', officialRoutes)
 
 app.use('/', user_Router)
-app.use('/officials', officialRoutes)
 
 
 app.use(errorHandler)
