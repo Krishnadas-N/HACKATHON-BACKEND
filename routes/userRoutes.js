@@ -3,7 +3,8 @@ const { authenticateToken } = require('../middlewares/userAuthentication');
 const upload =  require('../Utils/multer')
 const { placeReport,postLogin,
   getAwarnessData,
-  Signup } = require('../Controllers/userController');
+  Signup, 
+  respondOfficalRequest} = require('../Controllers/userController');
 
 const  user_Router = express.Router();
 
@@ -22,7 +23,7 @@ user_Router.post('/signup',Signup);
 
 user_Router.get('/get-complaint',authenticateToken,)
 
-
+user_Router.post('/:reportId/:response',respondOfficalRequest)
 
 
 module.exports=user_Router

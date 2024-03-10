@@ -8,21 +8,26 @@ const {
 } = require("../middlewares/responseHandler");
 const { sendEmail } = require("../Utils/nodemailer");
 const Official = require("../Models/officalSchema");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { getSupportContactInfo } = require("../Utils/supportUtils");
 
 const sendConfirmationMessages = async (contactDetails, newReport) => {
   const { phone, email } = contactDetails;
-
+  const supportInfo = await getSupportContactInfo();
+  const acknowledgmentMessage = `Thank you for reporting. Your report ID is ${newReport._id}. For immediate assistance or further support, please contact:
+  Hotline: ${supportInfo.hotline}
+  Counseling Service: ${supportInfo.counselingService}
+  Local Support Organization: ${supportInfo.localSupportOrg}`;
   await sendSMS(
     phone,
-    `Thank you for reporting. Your report ID is ${newReport._id}`
+    acknowledgmentMessage
   );
 
   // Send email confirmation
   await sendEmail(
     email,
     "Report Confirmation",
-    `Thank you for reporting. Your report ID is ${newReport._id}`
+    acknowledgmentMessage
   );
 };
 
@@ -31,7 +36,7 @@ const notifyNearestOfficials = async (location, newReport) => {
 
   await Promise.all(
     nearestOfficials.map(async (official) => {
-      const message = `New report: ${newReport._id}. Location: ${location}. Category: ${newReport.category}. Click here to view details: https://your-website.com/reports/${newReport._id}`;
+      const message = `New report: ${newReport._id}. Location: ${location}. Category: ${newReport.category}. Click here to view details: localhost:3000/official/reports/${newReport._id}`;
       await sendEmail(official.contactInfo.email, message);
     })
   );
@@ -73,6 +78,37 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
   } catch (error) {
     console.error('Error finding nearest officials:', error);
     throw error;
+  }
+};
+
+
+
+
+const notifyOfficialContactReposnse = async (officialEmail, reportId,repsonse) => {
+
+  if(repsonse==='Approved'){
+    const contactLink = `http://yourwebsite.com/reports/${reportId}/contact-user`
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: officialEmail,
+      subject: 'Contact Request Approved',
+      text: `The contact request for report ID ${reportId} has been approved.
+      You can now contact the user using the following link: ${contactLink}`
+  };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent: ',);
+  }else if(repsonse ==="Rejected"){
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: officialEmail,
+      subject: 'Contact Request Rejected',
+      text: `The contact request for report ID ${reportId} has been rejected by the user.`
+  };
+  await transporter.sendMail(mailOptions);
+  }else{
+    throw new Error('Invalid Response')
   }
 };
 
@@ -165,7 +201,7 @@ const postLogin = async (req, res, next) => {
       throw new Error("Invalid password");
     }
 
-    const token = jwt.sign({ user }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+    const token = jwt.sign({ user,role:'user' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
 
     successHandler(res, 200, 'Logged In Successfully', { token });
   } catch (err) {
@@ -214,13 +250,41 @@ const getComplaint = async (req, res, next) => {
 }
 
 
+const respondOfficalRequest = async(req,res,next)=>{
+  try {
+    const reportId = req.params.reportId;
+    const response = req.params.response;
+
+    const report = await Report.findById(reportId);
+    if (response.toLowerCase() === 'approve') {
+        report.userResponse = 'Approved';
+        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse)
+    } else if (response.toLowerCase() === 'reject') {
+        report.userResponse = 'Rejected';
+        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse);
+    } else {
+       throw new Error('Invalid response. Please respond with "Approve" or "Reject".');
+    }
+
+    await report.save();
+
+    // Function to notify the official that the contact request has been approved
+
+    successHandler(res, 200,'User response submitted successfully');
+} catch (error) {
+    console.error('Error submitting user response:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+}
+
 
 
 module.exports = {
   placeReport,
   postLogin,
   getAwarnessData,
-  Signup
+  Signup,
+  respondOfficalRequest
 }
 
 

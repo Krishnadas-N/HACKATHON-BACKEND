@@ -2,8 +2,12 @@ const Official = require("../Models/officalSchema")
 const User = require('../Models/userModel')
 const bcrypt = require('bcryptjs');
 const { successHandler, errorHandler } = require("../middlewares/responseHandler");
-const { default: mongoose } = require("mongoose");
-const Report = require("../Models/reportSchema");
+const jwt = require('jsonwebtoken');
+const SupportContact = require("../Models/supportScehma");
+const Report = require('../Models/reportSchema')
+const mongoose = require('mongoose');
+const { transporter } = require("../Utils/nodemailer");
+require('dotenv').config()
 
 const signup = async (req, res) => {
     try {
@@ -12,9 +16,11 @@ const signup = async (req, res) => {
         if (userData) {
             errorHandler({ name: "Email already exists" }, 501, res)
         } else {
-            req.body.Password = await bcrypt.hash(req.body.Password, 10)
-            const officialData = await Official.insertMany(req.body)[0]
-            successHandler(res, 200, "official signed successfully", officialData)
+            const officialData = await Official.create(req.body);
+            
+            const token = jwt.sign({ officialData,role:'offical' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+
+            successHandler(res, 200, "official signed successfully", {officialData,token})
         }
     } catch (error) {
         console.error(error);
@@ -31,8 +37,7 @@ const login = async (req, res) => {
             if (bcrypt.compare(req.body.Password, userData.Password)) {
                 successHandler(res, 201, "official signed successfully", userData)
             } else {
-                const error = { name: "Password do not match" }
-                errorHandler(error, 501, res)
+                throw new Error('Password do not match')
             }
         } else {
             const error = { name: "User not found" }
@@ -63,6 +68,52 @@ const userReport = async (req, res) => {
 }
 
 
+const sendContactRequestNotification = async (userEmail, reportId, officialName, officialEmail, message) => {
+    const approveLink = `http://yourwebsite.com/reports/${reportId}/approve`;
+    const rejectLink = `http://yourwebsite.com/reports/${reportId}/reject`;
+
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: userEmail,
+        subject: 'Contact Request Received',
+        text: `You have received a contact request regarding your report with ID ${reportId}. 
+               The official ${officialName} (${officialEmail}) wants to contact you. 
+               Message: ${message}
+               Do you approve this contact request? 
+               Please click the following link to approve: ${approveLink}
+               or click this link to reject: ${rejectLink}`
+    };
+
+    await transporter.sendMail(mailOptions);
+};
+
+
+
+const userContactRequest = async(req,res)=>{
+    try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.reportId)){
+            throw new Error('Invalid Report Id')
+        }
+        const { name, email,phone, message } = req.body;
+        const reportId = req.params.reportId;
+
+        await Report.findByIdAndUpdate(reportId, {
+            officialContact: { name, email,phone },
+            officialMessage: message
+        });
+
+        const report = await Report.findById(reportId).populate('userId');
+        await sendContactRequestNotification(report.userId.Email, reportId, name, email, message);
+
+        res.status(200).json({ message: 'Contact request submitted successfully' });
+    } catch (error) {
+        console.error('Error submitting contact request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
 module.exports = {
-    signup, login, userReport
+    signup, login ,userContactRequest,userReport
 }
