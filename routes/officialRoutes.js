@@ -2,14 +2,6 @@ const express = require('express')
 const router = express.Router()
 const { signup, login, userContactRequest,userReport, getCompliants } = require('../Controllers/officialController');
 const { Officialauthenticate, authenticateToken } = require('../middlewares/userAuthentication');
-const
-    {
-        signup,
-        login,
-        userContactRequest,
-        userReport,
-        getCompliants
-    } = require('../Controllers/officialController');
 
 
 
