@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
 const { errorHandler } = require('./responseHandler');
 
+
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
   if (token == null) return res.sendStatus(401)
 
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_TOKEN, (err, user) => {
     console.log(err)
 
     if (err) {
@@ -21,12 +22,13 @@ function authenticateToken(req, res, next) {
         } else {
             errorHandler(err,statusCode,res,next);
         }
-      }
+      }else{
 
     req.user = user
     console.log(req.user,user);
 
     next()
+      }
   })
 }
 
@@ -34,7 +36,7 @@ function Officialauthenticate(req, res, next) {
   if(req.user.role==='official') {
     next()
   }else{
-    errorHandler("Unauthorized Access",403,res,next)
+   return errorHandler("Unauthorized Access",403,res,next)
   }
 }
 
