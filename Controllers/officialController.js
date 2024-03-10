@@ -2,6 +2,8 @@ const Official = require("../Models/officalSchema")
 const User = require('../Models/userModel')
 const bcrypt = require('bcryptjs');
 const { successHandler, errorHandler } = require("../middlewares/responseHandler");
+const { default: mongoose } = require("mongoose");
+const Report = require("../Models/reportSchema");
 
 const signup = async (req, res) => {
     try {
@@ -42,7 +44,25 @@ const login = async (req, res) => {
     }
 }
 
+const userReport = async (req, res) => {
+    try {
+        if (mongoose.Types.ObjectId.isValid(req.params.reportId)) {
+            const userData = await Report.findById(req.params.reportId)
+            if (userData) {
+                successHandler(res, 201, "request success", userData)
+            } else {
+                errorHandler({ name: "document not found" }, 501, res)
+            }
+        } else {
+            errorHandler({ name: "the id is not a valid object id " }, 501, res)
+        }
+    } catch (error) {
+        console.error(error);
+        errorHandler(error, 501, res)
+    }
+}
+
 
 module.exports = {
-    signup, login
+    signup, login, userReport
 }
