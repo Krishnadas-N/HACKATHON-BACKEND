@@ -82,6 +82,37 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
 
  
 
+
+const notifyOfficialContactReposnse = async (officialEmail, reportId,repsonse) => {
+
+  if(repsonse==='Approved'){
+    const contactLink = `http://yourwebsite.com/reports/${reportId}/contact-user`
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: officialEmail,
+      subject: 'Contact Request Approved',
+      text: `The contact request for report ID ${reportId} has been approved.
+      You can now contact the user using the following link: ${contactLink}`
+  };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent: ',);
+  }else if(repsonse ==="Rejected"){
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: officialEmail,
+      subject: 'Contact Request Rejected',
+      text: `The contact request for report ID ${reportId} has been rejected by the user.`
+  };
+  await transporter.sendMail(mailOptions);
+  }else{
+    throw new Error('Invalid Response')
+  }
+};
+
+
+
 const placeReport = async (req, res, next) => {
   try {
     const userId = req.user._id
@@ -216,13 +247,41 @@ const getComplaint= async(req,res,next)=>{
 }
 
 
+const respondOfficalRequest = async(req,res,next)=>{
+  try {
+    const reportId = req.params.reportId;
+    const response = req.params.response;
+
+    const report = await Report.findById(reportId);
+    if (response.toLowerCase() === 'approve') {
+        report.userResponse = 'Approved';
+        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse)
+    } else if (response.toLowerCase() === 'reject') {
+        report.userResponse = 'Rejected';
+        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse);
+    } else {
+       throw new Error('Invalid response. Please respond with "Approve" or "Reject".');
+    }
+
+    await report.save();
+
+    // Function to notify the official that the contact request has been approved
+
+    successHandler(res, 200,'User response submitted successfully');
+} catch (error) {
+    console.error('Error submitting user response:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+}
+
 
 
 module.exports = {
   placeReport,
   postLogin,
   getAwarnessData,
-  Signup
+  Signup,
+  respondOfficalRequest
 }
 
  

@@ -62,6 +62,13 @@ const reportSchema = new mongoose.Schema({
         ref: 'Official'
     },
     comments: String,
+    officialContact: {
+        name: String,
+        email: String,
+        phone: String
+    },
+    officialMessage: String,
+    userResponse: String,
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now } ,
 });

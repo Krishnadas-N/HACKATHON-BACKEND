@@ -1,4 +1,4 @@
-function successHandler(res, statusCode = 201, message, data) {
+function successHandler(res, statusCode = 201, message, data={}) {
   res.status(statusCode).json({
     success: true,
     message: message,
