@@ -120,15 +120,20 @@ const notifyOfficialContactReposnse = async (officialEmail, reportId, repsonse) 
 
 const placeReport = async (req, res, next) => {
   try {
+    console.log('////////////////////////');
+    console.log(req.body);
+    console.log(req.files)
+
+
     const userId = req.user._id
     const {
       userName, contactDetails, location, complaintText,
       severity, category, comments
     } = req.body;
 
-    if (!userId || !userName || !location || !complaintText || !severity || !category) {
-      throw new Error("Missing fields");
-    }
+    // if (!userId || !userName || !location || !complaintText || !severity || !category) {
+    //   throw new Error("Missing fields");
+    // }
 
     const audioUrl = req.files.audio ? await uploadToCloudinary(req.files.audio) : null;
     const videoUrl = req.files.video ? await uploadToCloudinary(req.files.video) : null;

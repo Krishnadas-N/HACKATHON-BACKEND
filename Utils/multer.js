@@ -4,8 +4,9 @@ const path = require("path");
 module.exports = multer({
   storage: multer.diskStorage({}),
   fileFilter: (req, file, cb) => {
-    const allowedImageExtensions = [".jpg", ".jpeg", ".png"];
-    const allowedVideoExtensions = [".mp4", ".avi", ".mov"];
+    console.log(file)
+    const allowedImageExtensions = [".jpg", ".jpeg", ".png",".webp"];
+    const allowedVideoExtensions = [".mp4", ".avi", ".mov",".webp"];
     let ext = path.extname(file.originalname);
     if (
         !allowedImageExtensions.includes(ext.toLowerCase()) &&
