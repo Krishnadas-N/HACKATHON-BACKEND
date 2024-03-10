@@ -49,6 +49,24 @@ const login = async (req, res) => {
     }
 }
 
+const userReport = async (req, res) => {
+    try {
+        if (mongoose.Types.ObjectId.isValid(req.params.reportId)) {
+            const userData = await Report.findById(req.params.reportId)
+            if (userData) {
+                successHandler(res, 201, "request success", userData)
+            } else {
+                errorHandler({ name: "document not found" }, 501, res)
+            }
+        } else {
+            errorHandler({ name: "the id is not a valid object id " }, 501, res)
+        }
+    } catch (error) {
+        console.error(error);
+        errorHandler(error, 501, res)
+    }
+}
+
 
 const sendContactRequestNotification = async (userEmail, reportId, officialName, officialEmail, message) => {
     const approveLink = `http://yourwebsite.com/reports/${reportId}/approve`;
@@ -97,5 +115,5 @@ const userContactRequest = async(req,res)=>{
 
 
 module.exports = {
-    signup, login ,userContactRequest
+    signup, login ,userContactRequest,userReport
 }
