@@ -131,5 +131,5 @@ const getCompliants = async(req,res,next)=>{
 
 
 module.exports = {
-    signup, login ,userContactRequest,userReport
+    signup, login ,userContactRequest,userReport,getCompliants
 }

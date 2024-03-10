@@ -1,7 +1,6 @@
 const User = require("../Models/userModel");
 const { cloudinary, uploadToCloudinary } = require("../Utils/cloudinary");
 const upload = require("../Utils/multer");
-const bcrypt = require('bcryptjs')
 const {
   errorHandler,
   successHandler,
@@ -26,10 +25,7 @@ const sendConfirmationMessages = async (contactDetails, newReport) => {
   Hotline: ${supportInfo.hotline}
   Counseling Service: ${supportInfo.counselingService}
   Local Support Organization: ${supportInfo.localSupportOrg}`;
-  await sendSMS(
-    phone,
-    acknowledgmentMessage
-  );
+  await sendSMS(phone, acknowledgmentMessage);
 
   // Send email confirmation
   await sendEmail(
@@ -92,9 +88,9 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
 
 
 
-const notifyOfficialContactReposnse = async (officialEmail, reportId,repsonse) => {
+const notifyOfficialContactReposnse = async (officialEmail, reportId, repsonse) => {
 
-  if(repsonse==='Approved'){
+  if (repsonse === 'Approved') {
     const contactLink = `http://yourwebsite.com/reports/${reportId}/contact-user`
     const mailOptions = {
       from: process.env.EMAIL,
@@ -102,20 +98,20 @@ const notifyOfficialContactReposnse = async (officialEmail, reportId,repsonse) =
       subject: 'Contact Request Approved',
       text: `The contact request for report ID ${reportId} has been approved.
       You can now contact the user using the following link: ${contactLink}`
-  };
+    };
 
     await transporter.sendMail(mailOptions);
     console.log('Email sent: ',);
-  }else if(repsonse ==="Rejected"){
+  } else if (repsonse === "Rejected") {
 
     const mailOptions = {
       from: process.env.EMAIL,
       to: officialEmail,
       subject: 'Contact Request Rejected',
       text: `The contact request for report ID ${reportId} has been rejected by the user.`
-  };
-  await transporter.sendMail(mailOptions);
-  }else{
+    };
+    await transporter.sendMail(mailOptions);
+  } else {
     throw new Error('Invalid Response')
   }
 };
@@ -209,7 +205,7 @@ const postLogin = async (req, res, next) => {
       throw new Error("Invalid password");
     }
 
-    const token = jwt.sign({ user,role:'user' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+    const token = jwt.sign({ user, role: 'user' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
 
     successHandler(res, 200, 'Logged In Successfully', { token });
   } catch (err) {
@@ -248,60 +244,60 @@ const Signup = async (req, res, next) => {
 };
 
 
-const getComplaint= async(req,res,next)=>{
-  try{
+const getComplaint = async (req, res, next) => {
+  try {
     const userId = req.user._id
-    const userConplaints = await Report.find({_id:userId});
-    successHandler(res,200,"Successfully fetched complaints",userConplaints);
-  }catch (err) {
+    const userConplaints = await Report.find({ _id: userId });
+    successHandler(res, 200, "Successfully fetched complaints", userConplaints);
+  } catch (err) {
     console.error("ERROR IN SIGNUP", err);
     next(err);
   }
 }
 
 
-const respondOfficalRequest = async(req,res,next)=>{
+const respondOfficalRequest = async (req, res, next) => {
   try {
     const reportId = req.params.reportId;
     const response = req.params.response;
 
     const report = await Report.findById(reportId);
     if (response.toLowerCase() === 'approve') {
-        report.userResponse = 'Approved';
-        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse)
+      report.userResponse = 'Approved';
+      await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId, report.userResponse)
     } else if (response.toLowerCase() === 'reject') {
-        report.userResponse = 'Rejected';
-        await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId,report.userResponse);
+      report.userResponse = 'Rejected';
+      await notifyOfficialContactReposnse(report.assignedOfficial.email, reportId, report.userResponse);
     } else {
-       throw new Error('Invalid response. Please respond with "Approve" or "Reject".');
+      throw new Error('Invalid response. Please respond with "Approve" or "Reject".');
     }
 
     await report.save();
 
     // Function to notify the official that the contact request has been approved
 
-    successHandler(res, 200,'User response submitted successfully');
-} catch (error) {
+    successHandler(res, 200, 'User response submitted successfully');
+  } catch (error) {
     console.error('Error submitting user response:', error);
     next(error);
+  }
 }
-}
 
 
 
-const getComplaintId = async(req,res,next)=>{
-  try{
+const getComplaintId = async (req, res, next) => {
+  try {
     if (!mongoose.Types.ObjectId.isValid(req.params.reportId)) {
       throw new Error('Invalid Complaint Id')
     }
     const reportId = req.params.reportId;
     const report = await Report.findById(reportId);
-  
-    if(!report){
+
+    if (!report) {
       throw new Error('No reports Find this Id')
     }
-    successHandler(res, 200,'Complaint Fetched Successfully',{report});
-  }catch(error){
+    successHandler(res, 200, 'Complaint Fetched Successfully', { report });
+  } catch (error) {
     next(error);
   }
 }
