@@ -9,7 +9,12 @@ const mongoose = require('mongoose');
 const { transporter } = require("../Utils/nodemailer");
 require('dotenv').config()
 
-const signup = async (req, res) => {
+
+
+
+
+
+const signup = async (req, res,next) => {
     try {
         console.log(req.body);
         const userData = await User.findOne({ Email: req.body.Email })
@@ -29,13 +34,14 @@ const signup = async (req, res) => {
 }
 
 
-const login = async (req, res) => {
+const login = async (req, res,next) => {
     try {
         console.log(req.body);
         const userData = await User.findOne({ Email: req.body.Email })
         if (userData) {
             if (bcrypt.compare(req.body.Password, userData.Password)) {
-                successHandler(res, 201, "official signed successfully", userData)
+                const token = jwt.sign({ user:userData,role:'official' }, process.env.JWT_TOKEN, { expiresIn: '5h' });
+                successHandler(res, 201, "official signed successfully", {token});
             } else {
                 throw new Error('Password do not match')
             }
@@ -49,7 +55,7 @@ const login = async (req, res) => {
     }
 }
 
-const userReport = async (req, res) => {
+const userReport = async (req, res,next) => {
     try {
         if (mongoose.Types.ObjectId.isValid(req.params.reportId)) {
             const userData = await Report.findById(req.params.reportId)
@@ -89,7 +95,7 @@ const sendContactRequestNotification = async (userEmail, reportId, officialName,
 
 
 
-const userContactRequest = async(req,res)=>{
+const userContactRequest = async(req,res,next)=>{
     try {
         if(!mongoose.Types.ObjectId.isValid(req.params.reportId)){
             throw new Error('Invalid Report Id')
@@ -108,10 +114,20 @@ const userContactRequest = async(req,res)=>{
         res.status(200).json({ message: 'Contact request submitted successfully' });
     } catch (error) {
         console.error('Error submitting contact request:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+       next(error)
     }
 }
 
+
+const getCompliants = async(req,res,next)=>{
+    try{
+        const reports = await Report.find({}, 'userName complaintText severity category status createdAt updatedAt');
+        
+    }catch(error){
+    console.error('get compaint home:', error);
+       next(error)
+    }
+}
 
 
 module.exports = {

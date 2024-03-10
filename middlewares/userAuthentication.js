@@ -24,12 +24,22 @@ function authenticateToken(req, res, next) {
       }
 
     req.user = user
+    console.log(req.user,user);
 
     next()
   })
 }
 
+function Officialauthenticate(req, res, next) {
+  if(req.user.role==='official') {
+    next()
+  }else{
+    errorHandler("Unauthorized Access",403,res,next)
+  }
+}
+
 
 module.exports={
-    authenticateToken
+    authenticateToken,
+    Officialauthenticate
 }

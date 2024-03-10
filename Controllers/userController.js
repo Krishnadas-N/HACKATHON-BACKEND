@@ -9,6 +9,14 @@ const { sendEmail } = require("../Utils/nodemailer");
 const Official = require("../Models/officalSchema");
 const jwt = require('jsonwebtoken');
 const { getSupportContactInfo } = require("../Utils/supportUtils");
+const Report = require("../Models/reportSchema");
+const SupportContact = require("../Models/supportScehma");
+const { default: mongoose } = require("mongoose");
+const bcrypt = require('bcryptjs')
+
+
+
+
 
 const sendConfirmationMessages = async (contactDetails, newReport) => {
   const { phone, email } = contactDetails;
@@ -239,7 +247,9 @@ const Signup = async (req, res, next) => {
 
 const getComplaint= async(req,res,next)=>{
   try{
-    
+    const userId = req.user._id
+    const userConplaints = await Report.find({_id:userId});
+    successHandler(res,200,"Successfully fetched complaints",userConplaints);
   }catch (err) {
     console.error("ERROR IN SIGNUP", err);
     next(err);
@@ -270,8 +280,27 @@ const respondOfficalRequest = async(req,res,next)=>{
     successHandler(res, 200,'User response submitted successfully');
 } catch (error) {
     console.error('Error submitting user response:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    next(error);
 }
+}
+
+
+
+const getComplaintId = async(req,res,next)=>{
+  try{
+    if (!mongoose.Types.ObjectId.isValid(req.params.reportId)) {
+      throw new Error('Invalid Complaint Id')
+    }
+    const reportId = req.params.reportId;
+    const report = await Report.findById(reportId);
+  
+    if(!report){
+      throw new Error('No reports Find this Id')
+    }
+    successHandler(res, 200,'Complaint Fetched Successfully',{report});
+  }catch(error){
+    next(error);
+  }
 }
 
 
@@ -279,8 +308,10 @@ const respondOfficalRequest = async(req,res,next)=>{
 module.exports = {
   placeReport,
   postLogin,
+  getComplaint,
   getAwarnessData,
   Signup,
+  getComplaintId,
   respondOfficalRequest
 }
 
