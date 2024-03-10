@@ -6,8 +6,6 @@ const { Officialauthenticate, authenticateToken } = require('../middlewares/user
 
 
 
-
-
 router.post('/signup', signup);
 
 router.post('/login', login);

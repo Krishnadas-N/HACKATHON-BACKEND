@@ -1,6 +1,7 @@
 const User = require("../Models/userModel");
 const { cloudinary, uploadToCloudinary } = require("../Utils/cloudinary");
 const upload = require("../Utils/multer");
+const bcrypt = require('bcryptjs')
 const {
   errorHandler,
   successHandler,
@@ -88,7 +89,7 @@ const findNearestOfficials = async (referencePoint, maxDistance) => {
   }
 };
 
- 
+
 
 
 const notifyOfficialContactReposnse = async (officialEmail, reportId,repsonse) => {
@@ -169,7 +170,7 @@ const placeReport = async (req, res, next) => {
 }
 
 
-const getAwarnessData= async(req,res,next)=>{
+const getAwarnessData = async (req, res, next) => {
   try {
     const filePath = path.join(__dirname, 'WomenAwarness.json');
     const jsonData = fs.readFileSync(filePath, 'utf8');
@@ -178,7 +179,7 @@ const getAwarnessData= async(req,res,next)=>{
     successHandler(
       res,
       201,
-       {awarenessData: awarenessData} 
+      { awarenessData: awarenessData }
     )
   } catch (err) {
     console.error('Error reading awareness data:', err);
@@ -189,12 +190,13 @@ const getAwarnessData= async(req,res,next)=>{
 
 const postLogin = async (req, res, next) => {
   try {
+    console.log(req.body, "this is a request");
     const { Email, Password } = req.body;
-    
+
     if (!Email || !Password) {
       throw new Error("Please provide both Email and Password");
     }
-    
+
     const user = await User.findOne({ Email }).select('+Password').lean().exec();
 
     if (!user) {
@@ -220,7 +222,7 @@ const postLogin = async (req, res, next) => {
 const Signup = async (req, res, next) => {
   try {
     const { userName, Email, Password, Phone } = req.body;
-
+    console.log(req.body, userName, Email, Password, Phone);
     if (!userName || !Email || !Password || !Phone) {
       throw new Error("Please provide all required fields");
     }
@@ -237,7 +239,8 @@ const Signup = async (req, res, next) => {
     });
 
     await newUser.save();
-    successHandler(res, 200, 'User signed up successfully', { token,newUser });
+
+    successHandler(res, 200, 'User signed up successfully', { newUser });
   } catch (err) {
     console.error("ERROR IN SIGNUP", err);
     next(err);
@@ -315,7 +318,7 @@ module.exports = {
   respondOfficalRequest
 }
 
- 
+
 
 
 
